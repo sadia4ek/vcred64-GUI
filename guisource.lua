@@ -1,4 +1,5 @@
 -- made by paladin (vcred64 on discord)
+-- fork by treecolor (treec67 on discord)
 
 if getgenv().Library then
     getgenv().Library:Unload()
@@ -1851,7 +1852,9 @@ local Library do
                 Name = Data.Name or Data.name or "Window",
                 SubTitle = Data.SubTitle or Data.subtitle or "he",
                 ExpiresIn = Data.ExpiresIn or Data.expiresin or "23d",
-                
+                Icon = Data.Icon or Data.icon or "8508980536",
+                IconBGTransparency = Data.IconBGTransparency or Data.iconbtransparency or 1,
+
                 Pages = { },
                 Items = { },
                 IsOpen = false
@@ -1912,7 +1915,7 @@ local Library do
                     ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 }):AddToTheme({Color = "Border"})
                 
-                Items["Background"] = Instances:Create("Frame", {
+                Items["Background"] = Instances:Create("ImageLabel", { -- icon
                     Parent = Items["Title"].Instance,
                     Name = "\0",
                     AnchorPoint = Vector2New(0, 0.5),
@@ -1920,37 +1923,23 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0, 40, 0, 40),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(207, 207, 207)
+                    BackgroundColor3 = FromRGB(255, 255, 255),
+                    Image = Data.Icon, 
+                    BackgroundTransparency = Data.IconBTransparency
                 })
-                
+
                 Instances:Create("UICorner", {
                     Parent = Items["Background"].Instance,
-                    Name = "\0",
+                    Name = "123",
                     CornerRadius = UDimNew(0, 7)
                 })
-                
+
                 Instances:Create("UIStroke", {
                     Parent = Items["Background"].Instance,
                     Name = "\0",
                     Color = FromRGB(30, 33, 33),
                     ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 }):AddToTheme({Color = "Border"})
-                
-                Items["Text"] = Instances:Create("TextLabel", {
-                    Parent = Items["Background"].Instance,
-                    Name = "\0",
-                    FontFace = Library.Font,
-                    TextColor3 = FromRGB(0, 0, 0),
-                    BorderColor3 = FromRGB(0, 0, 0),
-                    Text = FirstLetterOfName,
-                    AnchorPoint = Vector2New(0.5, 0.5),
-                    BackgroundTransparency = 1,
-                    Position = UDim2New(0.5, 0, 0.5, 0),
-                    Size = UDim2New(1, -10, 1, -10),
-                    BorderSizePixel = 0,
-                    TextSize = 22,
-                    BackgroundColor3 = FromRGB(255, 255, 255)
-                })
                 
                 Items["RealTitle"] = Instances:Create("TextLabel", {
                     Parent = Items["Title"].Instance,
@@ -3896,6 +3885,7 @@ local Library do
                     Name = "Unload",
                     Callback = function()
                         Library:Unload()
+                        Library:Notification("ok bye", 3, "91306356501736")
                     end
                 })
                 
