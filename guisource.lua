@@ -1,5 +1,6 @@
 -- made by paladin (vcred64 on discord)
 -- fork by treecolor (treec67 on discord)
+-- version: 1.1
 
 if getgenv().Library then
     getgenv().Library:Unload()
@@ -1853,7 +1854,6 @@ local Library do
                 SubTitle = Data.SubTitle or Data.subtitle or "he",
                 ExpiresIn = Data.ExpiresIn or Data.expiresin or "23d",
                 Icon = Data.Icon or Data.icon or "8508980536",
-                IconBGTransparency = Data.IconBGTransparency or Data.iconbtransparency or 1,
 
                 Pages = { },
                 Items = { },
@@ -1923,9 +1923,9 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0, 40, 0, 40),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(255, 255, 255),
+                    BackgroundColor3 = FromRGB(207, 0, 207),
                     Image = Data.Icon, 
-                    BackgroundTransparency = Data.IconBTransparency
+                    BackgroundTransparency = 1
                 })
 
                 Instances:Create("UICorner", {
