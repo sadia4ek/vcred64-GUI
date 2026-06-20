@@ -1,6 +1,6 @@
 -- made by paladin (vcred64 on discord)
 -- fork by treecolor (treec67 on discord)
--- version: 1.1
+-- version: 1.2 fix
 
 if getgenv().Library then
     getgenv().Library:Unload()
@@ -3937,6 +3937,8 @@ local Library do
         end
     end
 end
+
+
 
 getgenv().Library = Library
 return Library
