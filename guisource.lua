@@ -1,6 +1,6 @@
 -- made by paladin (vcred64 on discord)
 -- fork by treecolor (treec67 on discord)
--- version: 1.3 fix section fixed
+-- version: 1.2 fix
 
 if getgenv().Library then
     getgenv().Library:Unload()
@@ -72,7 +72,6 @@ local Library do
             Assets = "Crown/Assets",
         },
 
-        -- Ignore below
         Pages = { },
         Sections = { },
 
@@ -187,14 +186,12 @@ local Library do
 
     Library.Theme = TableClone(Themes["Preset"])
 
-    -- Folders
     for Index, Value in Library.Folders do 
         if not isfolder(Value) then
             makefolder(Value)
         end
     end
 
-    -- Tweening
     local Tween = { } do
         Tween.__index = Tween
 
@@ -288,7 +285,6 @@ local Library do
         end
     end
 
-    -- Instances
     local Instances = { } do
         Instances.__index = Instances
 
@@ -496,7 +492,6 @@ local Library do
         end
     end
 
-    -- Custom font
     local CustomFont = { } do
         function CustomFont:New(Name, Weight, Style, Data)
             if not isfile(Data.Id) then 
@@ -1915,7 +1910,7 @@ local Library do
                     ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 }):AddToTheme({Color = "Border"})
                 
-                Items["Background"] = Instances:Create("ImageLabel", { -- icon
+                Items["Background"] = Instances:Create("ImageLabel", {
                     Parent = Items["Title"].Instance,
                     Name = "\0",
                     AnchorPoint = Vector2New(0, 0.5),
@@ -2376,158 +2371,119 @@ local Library do
         end
 
         Library.Pages.SubPage = function(self, Data)
-		    Data = Data or { }
-		
-		    local Page = {
-		        Window = self.Window,
-		        Page = self,
-		
-		        Name = Data.Name or Data.name or "SubPage",
-		        Columns = Data.Columns or Data.columns or 2,
-		
-		        Items = { },
-		        ColumnsData = { },
-		        Active = false
-		    }
-		
-		    local Items = { } do 
-		        Items["Inactive"] = Instances:Create("TextButton", {
-		            Parent = Page.Page.Items["SubPages"].Instance,
-		            Name = "\0",
-		            FontFace = Library.Font,
-		            TextColor3 = FromRGB(255, 255, 255),
-		            TextTransparency = 0.5,
-		            Text = Page.Name,
-		            AutoButtonColor = false,
-		            Size = UDim2New(0, 0, 1, 0),
-		            BackgroundTransparency = 1,
-		            BorderSizePixel = 0,
-		            BorderColor3 = FromRGB(0, 0, 0),
-		            AutomaticSize = Enum.AutomaticSize.X,
-		            TextSize = 14,
-		            BackgroundColor3 = FromRGB(30, 34, 34)
-		        })  Items["Inactive"]:AddToTheme({BackgroundColor3 = "Element"})
-		         
-		        Instances:Create("UIPadding", {
-		            Parent = Items["Inactive"].Instance,
-		            Name = "\0",
-		            PaddingRight = UDimNew(0, 8),
-		            PaddingLeft = UDimNew(0, 8)
-		        })
-		        
-		        Instances:Create("UICorner", {
-		            Parent = Items["Inactive"].Instance,
-		            Name = "\0",
-		            CornerRadius = UDimNew(0, 7)
-		        })                
-		
-		        Items["Page"] = Instances:Create("Frame", {
-		            Parent = Library.UnusedHolder.Instance,
-		            Name = "\0",
-		            Visible = false,
-		            BackgroundTransparency = 1,
-		            BorderColor3 = FromRGB(0, 0, 0),
-		            Size = UDim2New(1, 0, 1, 0),
-		            BorderSizePixel = 0,
-		            BackgroundColor3 = FromRGB(255, 255, 255)
-		        })
-		
-		        -- Используем UIGridLayout для равномерного распределения колонок
-		        local GridLayout = Instances:Create("UIGridLayout", {
-		            Parent = Items["Page"].Instance,
-		            Name = "\0",
-		            CellPadding = UDimNew(0, 8),
-		            CellSize = UDimNew(1 / Page.Columns, -4, 1, 0),
-		            FillDirectionMaxCells = Page.Columns,
-		            FillDirection = Enum.FillDirection.Vertical,
-		            SortOrder = Enum.SortOrder.LayoutOrder
-		        })
-		    
-		        for Index = 1, Page.Columns do 
-		            local NewColumn = Instances:Create("ScrollingFrame", {
-		                Parent = Items["Page"].Instance,
-		                Name = "\0",
-		                ScrollBarImageColor3 = FromRGB(0, 0, 0),
-		                Active = true,
-		                BorderColor3 = FromRGB(0, 0, 0),
-		                ScrollBarThickness = 0,
-		                BackgroundTransparency = 1,
-		                Size = UDim2New(1, 0, 1, 0),
-		                BorderSizePixel = 0,
-		                BackgroundColor3 = FromRGB(255, 255, 255)
-		            })
-		            
-		            if Index == 1 then
-		                Instances:Create("UIPadding", {
-		                    Parent = NewColumn.Instance,
-		                    Name = "\0",
-		                    PaddingTop = UDimNew(0, 3),
-		                    PaddingBottom = UDimNew(0, 3),
-		                    PaddingRight = UDimNew(0, 4),
-		                    PaddingLeft = UDimNew(0, 3)
-		                })                
-		            elseif Index == 2 then
-		                Instances:Create("UIPadding", {
-		                    Parent = NewColumn.Instance,
-		                    Name = "\0",
-		                    PaddingTop = UDimNew(0, 3),
-		                    PaddingBottom = UDimNew(0, 3),
-		                    PaddingRight = UDimNew(0, 8),
-		                    PaddingLeft = UDimNew(0, 4)
-		                })
-		            end
-		
-		            -- Добавляем UIListLayout для вертикального расположения элементов внутри колонки
-		            Instances:Create("UIListLayout", {
-		                Parent = NewColumn.Instance,
-		                Name = "\0",
-		                Padding = UDimNew(0, 6),
-		                SortOrder = Enum.SortOrder.LayoutOrder
-		            })
-		
-		            Page.ColumnsData[Index] = NewColumn
-		        end
-		    end
-		
-		    local Debounce = false
-		
-		    function Page:Turn(Bool)
-		        if Debounce then 
-		            return 
-		        end
-		
-		        Page.Active = Bool 
-		        
-		        Debounce = true
-		        Items["Page"].Instance.Visible = Bool 
-		        Items["Page"].Instance.Parent = Bool and Page.Page.Items["Columns"].Instance or Library.UnusedHolder.Instance
-		
-		        if Page.Active then
-		            Items["Inactive"]:Tween(nil, {BackgroundTransparency = 0, TextTransparency = 0})
-		        else
-		            Items["Inactive"]:Tween(nil, {BackgroundTransparency = 1, TextTransparency = 0.5})
-		        end
-		
-		        Debounce = false
-		    end
-		
-		    Items["Inactive"]:Connect("MouseButton1Down", function()
-		        for Index, Value in Page.Page.SubPages do 
-		            if Value == Page and Page.Active then
-		                return
-		            end
-		
-		            Value:Turn(Value == Page)
-		        end
-		    end)
-		
-		    if #Page.Page.SubPages == 0 then 
-		        Page:Turn(true)
-		    end
-		
-		    TableInsert(Page.Page.SubPages, Page)
-		    return setmetatable(Page, Library.Pages)
-		end
+            Data = Data or { }
+
+            local Page = {
+                Window = self.Window,
+                Page = self,
+
+                Name = Data.Name or Data.name or "SubPage",
+                Columns = Data.Columns or Data.columns or 2,
+
+                Items = { },
+                ColumnsData = { },
+                Active = false
+            }
+
+            local Items = { } do 
+                Items["Inactive"] = Instances:Create("TextButton", {
+                    Parent = Page.Page.Items["SubPages"].Instance,
+                    Name = "\0",
+                    FontFace = Library.Font,
+                    TextColor3 = FromRGB(255, 255, 255),
+                    TextTransparency = 0.5,
+                    Text = Page.Name,
+                    AutoButtonColor = false,
+                    Size = UDim2New(0, 0, 1, 0),
+                    BackgroundTransparency = 1,
+                    BorderSizePixel = 0,
+                    BorderColor3 = FromRGB(0, 0, 0),
+                    AutomaticSize = Enum.AutomaticSize.X,
+                    TextSize = 14,
+                    BackgroundColor3 = FromRGB(30, 34, 34)
+                })  Items["Inactive"]:AddToTheme({BackgroundColor3 = "Element"})
+                 
+                Instances:Create("UIPadding", {
+                    Parent = Items["Inactive"].Instance,
+                    Name = "\0",
+                    PaddingRight = UDimNew(0, 8),
+                    PaddingLeft = UDimNew(0, 8)
+                })
+                
+                Instances:Create("UICorner", {
+                    Parent = Items["Inactive"].Instance,
+                    Name = "\0",
+                    CornerRadius = UDimNew(0, 7)
+                })                
+
+                Items["Page"] = Instances:Create("Frame", {
+                    Parent = Library.UnusedHolder.Instance,
+                    Name = "\0",
+                    Visible = false,
+                    BackgroundTransparency = 1,
+                    BorderColor3 = FromRGB(0, 0, 0),
+                    Size = UDim2New(1, 0, 1, 0),
+                    BorderSizePixel = 0,
+                    BackgroundColor3 = FromRGB(255, 255, 255)
+                })
+
+                -- Используем UIGridLayout для равномерного распределения колонок
+                local GridLayout = Instances:Create("UIGridLayout", {
+                    Parent = Items["Page"].Instance,
+                    Name = "\0",
+                    CellPadding = UDimNew(0, 8),
+                    CellSize = UDimNew(1 / Page.Columns, -4, 1, 0),
+                    FillDirectionMaxCells = Page.Columns,
+                    FillDirection = Enum.FillDirection.Vertical,
+                    SortOrder = Enum.SortOrder.LayoutOrder
+                })
+            
+                for Index = 1, Page.Columns do 
+                    local NewColumn = Instances:Create("ScrollingFrame", {
+                        Parent = Items["Page"].Instance,
+                        Name = "\0",
+                        ScrollBarImageColor3 = FromRGB(0, 0, 0),
+                        Active = true,
+                        BorderColor3 = FromRGB(0, 0, 0),
+                        ScrollBarThickness = 0,
+                        BackgroundTransparency = 1,
+                        Size = UDim2New(1, 0, 1, 0),
+                        BorderSizePixel = 0,
+                        BackgroundColor3 = FromRGB(255, 255, 255)
+                    })
+                    
+                    if Index == 1 then
+                        Instances:Create("UIPadding", {
+                            Parent = NewColumn.Instance,
+                            Name = "\0",
+                            PaddingTop = UDimNew(0, 3),
+                            PaddingBottom = UDimNew(0, 3),
+                            PaddingRight = UDimNew(0, 4),
+                            PaddingLeft = UDimNew(0, 3)
+                        })                
+                    elseif Index == 2 then
+                        Instances:Create("UIPadding", {
+                            Parent = NewColumn.Instance,
+                            Name = "\0",
+                            PaddingTop = UDimNew(0, 3),
+                            PaddingBottom = UDimNew(0, 3),
+                            PaddingRight = UDimNew(0, 8),
+                            PaddingLeft = UDimNew(0, 4)
+                        })
+                    end
+
+                    -- Добавляем UIListLayout для вертикального расположения элементов внутри колонки
+                    Instances:Create("UIListLayout", {
+                        Parent = NewColumn.Instance,
+                        Name = "\0",
+                        Padding = UDimNew(0, 6),
+                        SortOrder = Enum.SortOrder.LayoutOrder
+                    })
+
+                    Page.ColumnsData[Index] = NewColumn
+                end
+            end
+
             local Debounce = false
 
             function Page:Turn(Bool)
