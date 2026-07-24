@@ -1,6 +1,6 @@
 -- made by paladin (vcred64 on discord)
 -- fork by treecolor (treec67 on discord)
--- version: 1.4 fix я ебал
+-- version: 15 fix я ебал
 
 if getgenv().Library then
     getgenv().Library:Unload()
@@ -2426,15 +2426,15 @@ local Library do
 			            BackgroundColor3 = FromRGB(255, 255, 255)
 			        })
 			
-			        -- Используем UIGridLayout для равномерного распределения колонок
-			        local GridLayout = Instances:Create("UIGridLayout", {
+			        -- Используем обычный UIListLayout с горизонтальным заполнением
+			        local Layout = Instances:Create("UIListLayout", {
 			            Parent = Items["Page"].Instance,
 			            Name = "\0",
-			            CellPadding = UDimNew(0, 8),
-			            CellSize = UDim2New(1 / Page.Columns, -4, 1, 0), -- Исправлено: UDim2 вместо UDim
-			            FillDirectionMaxCells = Page.Columns,
-			            FillDirection = Enum.FillDirection.Vertical,
-			            SortOrder = Enum.SortOrder.LayoutOrder
+			            FillDirection = Enum.FillDirection.Horizontal,
+			            SortOrder = Enum.SortOrder.LayoutOrder,
+			            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			            VerticalAlignment = Enum.VerticalAlignment.Center,
+			            Padding = UDimNew(0, 8)
 			        })
 			    
 			        for Index = 1, Page.Columns do 
@@ -2446,7 +2446,7 @@ local Library do
 			                BorderColor3 = FromRGB(0, 0, 0),
 			                ScrollBarThickness = 0,
 			                BackgroundTransparency = 1,
-			                Size = UDim2New(1, 0, 1, 0),
+			                Size = UDim2New(1 / Page.Columns, -8, 1, 0),
 			                BorderSizePixel = 0,
 			                BackgroundColor3 = FromRGB(255, 255, 255)
 			            })
@@ -2482,6 +2482,45 @@ local Library do
 			        end
 			    end
 			
+			    local Debounce = false
+			
+			    function Page:Turn(Bool)
+			        if Debounce then 
+			            return 
+			        end
+			
+			        Page.Active = Bool 
+			        
+			        Debounce = true
+			        Items["Page"].Instance.Visible = Bool 
+			        Items["Page"].Instance.Parent = Bool and Page.Page.Items["Columns"].Instance or Library.UnusedHolder.Instance
+			
+			        if Page.Active then
+			            Items["Inactive"]:Tween(nil, {BackgroundTransparency = 0, TextTransparency = 0})
+			        else
+			            Items["Inactive"]:Tween(nil, {BackgroundTransparency = 1, TextTransparency = 0.5})
+			        end
+			
+			        Debounce = false
+			    end
+			
+			    Items["Inactive"]:Connect("MouseButton1Down", function()
+			        for Index, Value in Page.Page.SubPages do 
+			            if Value == Page and Page.Active then
+			                return
+			            end
+			
+			            Value:Turn(Value == Page)
+			        end
+			    end)
+			
+			    if #Page.Page.SubPages == 0 then 
+			        Page:Turn(true)
+			    end
+			
+			    TableInsert(Page.Page.SubPages, Page)
+			    return setmetatable(Page, Library.Pages)
+			end
 			    local Debounce = false
 			
 			    function Page:Turn(Bool)
